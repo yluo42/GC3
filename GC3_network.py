@@ -104,10 +104,10 @@ class TasNet(nn.Module):
         squeeze_mean = squeeze_output.mean(2).view(batch_size, squeeze_frame, 
                                                    self.enc_dim).transpose(1,2).contiguous()  # B, N, L
         
-        # DPRNN
+        # sequence modeling
         feature_output = self.seq_model(squeeze_mean).view(batch_size, -1, squeeze_frame)  # B, N, L
         
-        # unsqueeze
+        # context decoding
         feature_output = feature_output.unsqueeze(2) + squeeze_block  # B, N, context, L
         feature_output = feature_output.permute(0,3,1,2).contiguous().view(batch_size*squeeze_frame,
                                                                            self.enc_dim,
